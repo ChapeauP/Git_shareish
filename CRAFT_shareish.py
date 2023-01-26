@@ -14,13 +14,11 @@ import test
 import imgproc
 import file_utils
 import itertools
-import pandas as pd
 
 from utils import CTCLabelConverter, AttnLabelConverter
 from model import Model
 from craft import CRAFT
-from dataset import RawDataset, AlignCollate, ShareishDataset
-from PIL import Image
+from dataset import AlignCollate, ShareishDataset
 import torch.nn.functional as F
 import cv2
 def str2bool(v):
