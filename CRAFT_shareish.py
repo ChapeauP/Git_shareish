@@ -1,19 +1,17 @@
 
 import os
 import argparse
-from test import copyStateDict
+from BBoxes import copyStateDict
 import string
 import torch
-import torch.nn as nn
 import torch.backends.cudnn as cudnn
 
 
 import cv2
 import numpy as np
-import test
+import BBoxes
 import imgproc
 import file_utils
-import itertools
 
 from utils import CTCLabelConverter, AttnLabelConverter
 from model import Model
@@ -79,7 +77,7 @@ def Boxes():
 
     args = parser.parse_args()
  
-    bboxes, polys, score_text, det_scores = test.test_net(model, image, text_threshold, link_threshold, low_text, cuda, False, args)
+    bboxes, polys, score_text, det_scores = BBoxes.test_net(model, image, text_threshold, link_threshold, low_text, cuda, False, args)
 
     bbox_score = []
 
@@ -250,39 +248,14 @@ def generate_text(image, words):
                 # calculate confidence score (= multiply of pred_max_prob)
                 confidence_score = pred_max_prob.cumprod(dim=0)[-1]
 
-                print(f'{"blbl":25s}\t{pred:25s}\t{confidence_score:0.4f}')
-                log.write(f'{"blbl":25s}\t{pred:25s}\t{confidence_score:0.4f}\n')
+                print(f'{"testing":25s}\t{pred:25s}\t{confidence_score:0.4f}')
+                log.write(f'{"testing":25s}\t{pred:25s}\t{confidence_score:0.4f}\n')
 
             log.close()
-def read_text():
-    result2_path = "result_1file.txt"
-    result2 = open(result2_path, "r")
-    result_text2 = result2.readlines()
-    result2.close()
 
-    #if line starts with --- or image_path remove it
-    result_text2 = [x for x in result_text2 if not x.startswith("---") and not x.startswith("image_path")]
-
-
-    # split with tab
-    result_text2 = [x.split('\t') for x in result_text2]
-    
-    
-
-
-    
-    #group line with same 77 first characters as first element of the list
-    result_text2 = [list(g) for k, g in itertools.groupby(result_text2, lambda x: x[0][:77])]
-
-    for i in range(len(result_text2)):
-        for j in range(len(result_text2[i])):
-            result_text2[i][j] = result_text2[i][j][1]
-
-    join_result2 = result_text2
-    return join_result2
 
 if __name__ == '__main__':
+
     words, image = get_words()
     res = generate_text(image, words)
-    result = read_text()
-    #print(result)
+
